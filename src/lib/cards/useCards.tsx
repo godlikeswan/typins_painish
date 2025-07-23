@@ -90,6 +90,7 @@ export const useCards = () => {
     );
 
     return {
+        cards,
         cardsState,
         currentWord,
         processAnswer,

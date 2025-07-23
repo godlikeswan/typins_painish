@@ -8,9 +8,10 @@ import { Defs } from "../../components/Def";
 import { useCards } from "../../lib/cards/useCards";
 import { useGoogle } from "../../lib/saveProgress/google/context";
 import { useNavigate } from "react-router";
+import { WordsMap } from "../../components/WordsMap";
 
 export const Main = () => {
-    const { currentWord, processAnswer, cardsState, chooseNextWord } =
+    const { currentWord, processAnswer, cardsState, chooseNextWord, cards } =
         useCards();
     const [showingAnswer, setShowingAnswer] = useState(false);
     const [input, setInput] = useState("");
@@ -75,43 +76,49 @@ export const Main = () => {
     ]);
 
     return (
-        <Page>
-            <div class="Main">
-                <div class={showingAnswer ? "" : "hidden"}>
+        <>
+            <WordsMap cards={cards} currentWord={currentWord} />
+            <Page>
+                <div class="Main">
+                    <div class={showingAnswer ? "" : "hidden"}>
+                        {cardsState === "idle" || cardsState === "saving" ? (
+                            <CheckedAnswer
+                                current={input}
+                                target={currentWord}
+                            />
+                        ) : (
+                            "..."
+                        )}
+                    </div>
+                    <WordInput
+                        id="ip"
+                        onInput={(e) => {
+                            if (
+                                "value" in e.target &&
+                                typeof e.target.value === "string"
+                            )
+                                setInput(e.target.value);
+                        }}
+                        value={input}
+                        readOnly={
+                            showingAnswer ||
+                            ["initial", "error", "loading"].includes(cardsState)
+                        }
+                    />
+                    <button onClick={onEnterButtonClick}>Enter</button>
+                    {cardsState === "initial" && "..."}
+                    {cardsState === "error" && "x"}
+                    {cardsState === "loading" && "<-"}
+                    {cardsState === "idle" && "v"}
+                    {cardsState === "saving" && "->"}
+                    <br />
                     {cardsState === "idle" || cardsState === "saving" ? (
-                        <CheckedAnswer current={input} target={currentWord} />
+                        <Defs word={currentWord} />
                     ) : (
                         "..."
                     )}
                 </div>
-                <WordInput
-                    id="ip"
-                    onInput={(e) => {
-                        if (
-                            "value" in e.target &&
-                            typeof e.target.value === "string"
-                        )
-                            setInput(e.target.value);
-                    }}
-                    value={input}
-                    readOnly={
-                        showingAnswer ||
-                        ["initial", "error", "loading"].includes(cardsState)
-                    }
-                />
-                <button onClick={onEnterButtonClick}>Enter</button>
-                {cardsState === "initial" && "..."}
-                {cardsState === "error" && "x"}
-                {cardsState === "loading" && "<-"}
-                {cardsState === "idle" && "v"}
-                {cardsState === "saving" && "->"}
-                <br />
-                {cardsState === "idle" || cardsState === "saving" ? (
-                    <Defs word={currentWord} />
-                ) : (
-                    "..."
-                )}
-            </div>
-        </Page>
+            </Page>
+        </>
     );
 };
