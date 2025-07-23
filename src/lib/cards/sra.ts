@@ -30,7 +30,7 @@ export function processAnswerResult(
     const len = cards.length;
     while (
         wordIndex < len - 1 &&
-        cards[wordIndex + 1].astat !== 0 &&
+        cards[wordIndex + 1].showNext !== 0 &&
         cards[wordIndex + 1].showNext < card.showNext
     ) {
         ++wordIndex;

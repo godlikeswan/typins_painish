@@ -6,6 +6,7 @@ export async function getGoogleFileId() {
         method: "GET",
         params: {
             spaces: "appDataFolder",
+            q: "name = 'es_1.json'",
         },
     });
     const files = listFilesRes.result.files;
@@ -18,7 +19,7 @@ export async function createNewGoogleFile() {
         path: "https://www.googleapis.com/drive/v3/files",
         method: "POST",
         body: {
-            name: "typins_painish-" + new Date().toISOString() + ".json",
+            name: "es_1.json",
             mimeType: "application/json",
             parents: ["appDataFolder"],
         },

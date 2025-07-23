@@ -14,7 +14,7 @@ export const WordsDataContext = createContext(wordsData);
 const initCards = () => {
     const cards: WordStats[] = [];
     wordsData.wordsSortedByFreq
-        .filter((_, i) => i < 100000)
+        .filter((_, i) => i < 10)
         .forEach((word) => {
             cards.push({ word, astat: 0, showNext: 0 });
         });
@@ -31,6 +31,11 @@ export const useCards = () => {
     const [cardsState, setCardsState] = useState<CardsState>("initial");
     const { googleState } = useGoogle();
 
+    const chooseNextWord = useCallback(() => {
+        const newIndex = chooseWordIndex(cardsRef.current);
+        setWordIndex(chooseWordIndex(cardsRef.current));
+    }, [setWordIndex]);
+
     useEffect(() => {
         if (googleState !== "ready") navigate("/");
         if (cardsState === "initial") {
@@ -39,6 +44,7 @@ export const useCards = () => {
                 const res = await loadGoogleFile(initCards);
                 cardsRef.current = res.data;
                 setGoogleFileId(res.googleFileId);
+                chooseNextWord();
                 setCardsState("idle");
             };
             loadCardsFunc();
@@ -50,10 +56,8 @@ export const useCards = () => {
         const listener = () => {
             const save = async () => {
                 const savingWord = currentWord;
-                console.log(savingWord, currentWord);
                 setCardsState("saving");
                 await updateGoogleFile(cardsRef.current, googleFileId);
-                console.log(savingWord, currentWord);
                 setCardsState("idle");
             };
             if (document.hidden) save();
@@ -84,10 +88,6 @@ export const useCards = () => {
         },
         [currentWord, wordIndex, setCardsState, googleFileId],
     );
-
-    const chooseNextWord = useCallback(() => {
-        setWordIndex(chooseWordIndex(cardsRef.current));
-    }, [setWordIndex]);
 
     return {
         cardsState,
