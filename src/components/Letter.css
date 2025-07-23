@@ -1,0 +1,22 @@
+.missing {
+    color: var(--color-front-average);
+}
+
+.wrong {
+    color: var(--color-front-bad);
+}
+
+.correct {
+    color: var(--color-front-good);
+}
+
+.hasExessCharsBefore {
+    position: relative;
+}
+
+.hasExessCharsBefore::before {
+    content: " ";
+    position: absolute;
+    transform: translateX(-50%);
+    border-bottom: 2px var(--color-front-bad) solid;
+}
