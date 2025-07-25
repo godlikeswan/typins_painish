@@ -1,9 +1,9 @@
 import { createContext } from "preact";
 import { WordStats } from "./cards";
-import wordsDataRaw from "../../../cards.json?raw";
-import { WordsData } from "../../../tools/wordDataTypes";
+import wordsDataRaw from "../../../words_data.json?raw";
+import { WordsData, WordsDataByLang } from "../../../tools/wordDataTypes";
 
-const wordsData: WordsData = JSON.parse(wordsDataRaw);
+const wordsData: WordsDataByLang = JSON.parse(wordsDataRaw);
 
 export const saveCards = (cards: WordStats[]) => {
     // localStorage.setItem("cards", JSON.stringify(cards));
@@ -26,5 +26,5 @@ export const saveCards = (cards: WordStats[]) => {
 //     return JSON.parse(localStorage.getItem("cards"));
 // };
 
-export const WordsDataContext = createContext(wordsData);
+export const WordsDataContext = createContext(wordsData["es"]);
 // export const CardsContext = createContext(loadCards());

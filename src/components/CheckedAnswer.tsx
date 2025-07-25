@@ -2,16 +2,32 @@ import { useMemo } from "preact/hooks";
 import { Letter } from "./Letter";
 import { wordsDiff } from "../lib/wordsDiff";
 
-export const CheckedAnswer = (props: { current: string; target: string }) => {
-    const { current, target } = props;
-    const diff = useMemo(() => wordsDiff(current, target), [current, target]);
+import "./CheckedAnswer.css";
+
+export const CheckedAnswer = (props: {
+    current: string;
+    target: string;
+    hidden: boolean;
+}) => {
+    const { current, target, hidden } = props;
+    const diff = useMemo(
+        () => (target && wordsDiff(current, target)) || [],
+        [current, target],
+    );
     return (
-        <>
-            <div style={{ whiteSpace: "preserve" }}>
-                {diff.map((l) => (
-                    <Letter {...l} />
-                ))}
-            </div>
-        </>
+        <div class={`CheckedAnswer${hidden ? " hidden" : ""}`}>
+            {diff.length === 0 ? (
+                "..."
+            ) : (
+                <a
+                    href={`https://en.wiktionary.org/wiki/${target}#Spanish`}
+                    target="_blank"
+                >
+                    {diff.map((l) => (
+                        <Letter {...l} />
+                    ))}
+                </a>
+            )}
+        </div>
     );
 };

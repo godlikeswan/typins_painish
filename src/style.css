@@ -2,6 +2,7 @@
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 
     --color-front-primary: #222;
+    --color-front-secondary: #555;
     --color-back-primary: #fff;
     --color-front-bad: #900;
     --color-front-average: #990;
@@ -30,6 +31,7 @@ body {
 @media (prefers-color-scheme: dark) {
     :root {
         --color-front-primary: #bbb;
+        --color-front-secondary: #999;
         --color-back-primary: #111;
         --color-front-bad: #f00;
         --color-front-average: #ff0;

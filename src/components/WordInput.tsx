@@ -1,7 +1,12 @@
 import { ComponentProps } from "preact";
 import { useEffect } from "preact/hooks";
 
-export const WordInput = (props: ComponentProps<"input">) => {
+import "./WordInput.css";
+
+export const WordInput = (
+    props: { isGood: boolean; isBad: boolean } & ComponentProps<"input">,
+) => {
+    const { isGood, isBad, ...rest } = props;
     useEffect(() => {
         const f = () => {
             const ip = document.getElementById("ip");
@@ -15,7 +20,7 @@ export const WordInput = (props: ComponentProps<"input">) => {
 
     return (
         <input
-            {...props}
+            {...rest}
             id="ip"
             onBlur={(e) => {
                 setTimeout(() => {
@@ -29,6 +34,7 @@ export const WordInput = (props: ComponentProps<"input">) => {
             ref={(el) => {
                 if (el) el.focus();
             }}
+            class={`${isGood ? "Good" : ""}${isGood && isBad ? " " : ""}${isBad ? "Bad" : ""}`}
             autoFocus
         />
     );

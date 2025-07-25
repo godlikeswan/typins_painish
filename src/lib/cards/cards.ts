@@ -9,4 +9,5 @@ export type WordStats = {
     word: string;
     astat: number;
     showNext: number;
+    hiddenDefs: number[];
 };

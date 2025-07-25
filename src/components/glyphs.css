@@ -1,0 +1,17 @@
+@keyframes updown {
+    from {
+        transform: translateY(-10%);
+    }
+    to {
+        transform: translateY(10%);
+    }
+}
+
+.Glyph {
+    /* font-family: monospace; */
+}
+
+.Move {
+    display: inline-block;
+    animation: 0.4s ease-in-out 0s infinite alternate updown;
+}

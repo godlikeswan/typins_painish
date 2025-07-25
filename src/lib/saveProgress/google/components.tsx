@@ -48,11 +48,7 @@ export const GoogleScripts = () => {
             navigate("/learn");
         };
 
-        if (gapi.client.getToken() === null) {
-            tokenClient.requestAccessToken({ prompt: "consent" });
-        } else {
-            tokenClient.requestAccessToken({ prompt: "" });
-        }
+        tokenClient.requestAccessToken();
     }, [
         gapiBranchCompleted,
         gisBranchCompleted,
@@ -74,7 +70,7 @@ export const GoogleScripts = () => {
         const tokenClientNew = google.accounts.oauth2.initTokenClient({
             client_id: CLIENT_ID,
             scope: SCOPES,
-            callback: "", // defined later
+            callback: "",
         });
         setTokenClient(tokenClientNew);
         setGisBranchCompleted(true);

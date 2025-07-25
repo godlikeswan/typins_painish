@@ -2,7 +2,7 @@ import { createReadStream, writeFileSync } from "node:fs";
 import { createInterface } from "node:readline";
 import * as path from "node:path";
 // comment before run; uncomment for types
-import { Def, Word } from "./wordDataTypes";
+// import { Def, Word, WordsDataByLang } from "./wordDataTypes";
 
 const langs = [
     "es",
@@ -70,13 +70,38 @@ async function processLang(lang: (typeof langs)[0]) {
 
     let i = 0;
     for (const w of cardsSet) {
-        if (dict.has(w) && i++ < 1000) {
+        if (dict.has(w) && i++ < 10000) {
             wordsSortedByFreq.push(w);
             wordsDefs[w] = dict.get(w);
         }
     }
-
-    writeFileSync(outFile, JSON.stringify({ wordsSortedByFreq, wordsDefs }));
-
-    console.log("file written");
+    return { wordsSortedByFreq, wordsDefs };
 }
+
+// Promise.all(
+//     langs.map(
+//         (lang) =>
+//             new Promise((resolve) => {
+//                 processLang(lang).then((v) => {
+//                     resolve([lang, v]);
+//                 });
+//             }),
+//     ),
+// );
+
+const wordsDataByLangs: WordsDataByLang = Object.fromEntries(
+    // Promise.all(langs.map(async (l) => [l, await processLang(l)])),
+    await Promise.all(
+        langs.map(
+            (lang) =>
+                new Promise((resolve) => {
+                    processLang(lang).then((v) => {
+                        resolve([lang, v]);
+                    });
+                }),
+        ),
+    ),
+);
+
+writeFileSync(outFile, JSON.stringify(wordsDataByLangs));
+console.log("file written");

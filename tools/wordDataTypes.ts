@@ -17,3 +17,7 @@ export type WordsData = {
     wordsSortedByFreq: Word[];
     wordsDefs: Record<Word, Def[]>;
 };
+
+export type WordsDataByLang = {
+    [key in string]: WordsData;
+};

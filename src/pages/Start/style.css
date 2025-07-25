@@ -1,5 +1,21 @@
 button {
     font-size: inherit;
-    padding: 5px 10px;
-    margin: 10px;
+    padding: 6px 12px;
+    background: none;
+    outline: none;
+    border: var(--color-front-secondary) 2px solid;
+    border-radius: 12px;
+}
+.Start button {
+    margin-top: 16px;
+}
+
+h1 {
+    margin: 0;
+}
+
+button:focus,
+button:hover {
+    cursor: pointer;
+    border: var(--color-front-primary) 2px solid;
 }

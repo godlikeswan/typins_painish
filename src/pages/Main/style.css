@@ -1,17 +1,30 @@
 .Main {
 }
 
-input {
-    border-radius: 16px;
-    font-size: 32px;
-    background-color: inherit;
-    border: #888 solid 2px;
-    padding: 8px 16px;
-    outline: none;
-    width: 100%;
-    box-sizing: border-box;
+.TopBar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 16px;
 }
 
-.hidden {
-    opacity: 0;
+.TopBar > .GoogleStatus {
+    margin-left: auto;
+}
+
+.InputField {
+    display: grid;
+    grid-template:
+        "a ." auto
+        "b c" auto;
+    gap: 8px;
+}
+
+.InputField > button {
+    border-radius: 16px;
+}
+
+a {
+    text-decoration: none;
 }

@@ -1,0 +1,24 @@
+input {
+    border-radius: 16px;
+    font-size: 32px;
+    background-color: inherit;
+    border: var(--color-front-primary) 2px solid;
+    padding: 8px 16px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+input:read-only {
+    background-color: #444;
+    color: var(--color-front-secondary);
+}
+
+.Good {
+    border: var(--color-front-good) 2px solid;
+}
+
+.Bad {
+    border: var(--color-front-bad) 2px solid;
+}

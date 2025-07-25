@@ -1,43 +1,53 @@
 import { WordStats } from "./cards";
-import wordsDataRaw from "../../../cards.json?raw";
-import { WordsData } from "../../../tools/wordDataTypes";
+import wordsDataRaw from "../../../words_data.json?raw";
+import { WordsDataByLang } from "../../../tools/wordDataTypes";
 import { useCallback, useEffect, useRef, useState } from "preact/hooks";
-import { chooseWordIndex, processAnswerResult } from "./sra";
+import { chooseWordIndex, processAnswerResult, toggleDef } from "./sra";
 import { useGoogle } from "../saveProgress/google/context";
 import { loadGoogleFile, updateGoogleFile } from "../saveProgress/google/api";
 import { createContext } from "preact";
 import { useNavigate } from "react-router";
 
-export const wordsData: WordsData = JSON.parse(wordsDataRaw);
+export const wordsData: WordsDataByLang = JSON.parse(wordsDataRaw);
 export const WordsDataContext = createContext(wordsData);
 
 const initCards = () => {
     const cards: WordStats[] = [];
-    wordsData.wordsSortedByFreq
-        .filter((_, i) => i < 10)
+    wordsData["es"].wordsSortedByFreq
+        // .filter((_, i) => i < 3)
         .forEach((word) => {
-            cards.push({ word, astat: 0, showNext: 0 });
+            cards.push({ word, astat: 0, showNext: 0, hiddenDefs: [] });
         });
     return cards;
 };
 
-type CardsState = "initial" | "loading" | "idle" | "saving" | "error" | "local";
+export type CardsState =
+    | "initial"
+    | "loading"
+    | "idle"
+    | "saving"
+    | "error"
+    | "local";
 
 export const useCards = () => {
     const cardsRef = useRef(null);
-    const [googleFileId, setGoogleFileId] = useState(null);
+    const { googleState } = useGoogle();
     const navigate = useNavigate();
+
+    const [googleFileId, setGoogleFileId] = useState(null);
     const [wordIndex, setWordIndex] = useState<number>(0);
     const [cardsState, setCardsState] = useState<CardsState>("initial");
-    const { googleState } = useGoogle();
 
     const chooseNextWord = useCallback(() => {
-        const newIndex = chooseWordIndex(cardsRef.current);
+        if (!cardsRef.current) navigate("/");
         setWordIndex(chooseWordIndex(cardsRef.current));
-    }, [setWordIndex]);
+    }, [setWordIndex, navigate]);
 
     useEffect(() => {
-        if (googleState !== "ready") navigate("/");
+        if (googleState !== "ready" || !gapi || !google) {
+            navigate("/");
+            return;
+        }
         if (cardsState === "initial") {
             const loadCardsFunc = async () => {
                 setCardsState("loading");
@@ -50,25 +60,17 @@ export const useCards = () => {
             loadCardsFunc();
             return;
         }
-    }, [googleState, navigate, cardsState, setCardsState, setGoogleFileId]);
-
-    useEffect(() => {
-        const listener = () => {
-            const save = async () => {
-                const savingWord = currentWord;
-                setCardsState("saving");
-                await updateGoogleFile(cardsRef.current, googleFileId);
-                setCardsState("idle");
-            };
-            if (document.hidden) save();
-        };
-        document.addEventListener("visibilitychange", listener);
-        return () => {
-            document.removeEventListener("visibilitychange", listener);
-        };
-    });
+    }, [
+        googleState,
+        navigate,
+        cardsState,
+        setCardsState,
+        setGoogleFileId,
+        chooseNextWord,
+    ]);
 
     const cards = cardsRef.current;
+    const currentCard = cards && cards[wordIndex];
     const currentWord = cards && cards[wordIndex] ? cards[wordIndex].word : "";
 
     const processAnswer = useCallback(
@@ -86,14 +88,23 @@ export const useCards = () => {
             save();
             setWordIndex(changedIndex);
         },
-        [currentWord, wordIndex, setCardsState, googleFileId],
+        [currentWord, wordIndex, setCardsState, googleFileId, setWordIndex],
+    );
+
+    const handleDefToggled = useCallback(
+        (defIndex: number) => {
+            toggleDef(defIndex, wordIndex, cardsRef.current);
+        },
+        [wordIndex],
     );
 
     return {
         cards,
         cardsState,
         currentWord,
+        currentCard,
         processAnswer,
         chooseNextWord,
+        handleDefToggled,
     };
 };

@@ -37,9 +37,20 @@ export function processAnswerResult(
         cards[wordIndex - 1] = cards[wordIndex];
     }
     while (wordIndex > 0 && cards[wordIndex - 1].showNext > card.showNext) {
-        cards[wordIndex] = cards[wordIndex];
+        cards[wordIndex] = cards[wordIndex - 1];
         --wordIndex;
     }
     cards[wordIndex] = card;
     return wordIndex;
+}
+
+export function toggleDef(
+    defIndex: number,
+    wordIndex: number,
+    cards: WordStats[],
+) {
+    const card = cards[wordIndex];
+    if (card.hiddenDefs.includes(defIndex))
+        card.hiddenDefs = card.hiddenDefs.filter((i) => i !== defIndex);
+    else card.hiddenDefs.push(defIndex);
 }
