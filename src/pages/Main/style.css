@@ -15,9 +15,7 @@
 
 .InputField {
     display: grid;
-    grid-template:
-        "a ." auto
-        "b c" auto;
+    grid-template-columns: 1fr auto;
     gap: 8px;
 }
 

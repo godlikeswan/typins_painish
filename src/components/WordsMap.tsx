@@ -15,7 +15,7 @@ export const WordsMap = (props: {
 }) => {
     const { cards, currentWord } = props;
     const ref = useRef<HTMLCanvasElement>(null);
-    const [hidden, setHidden] = useState(true);
+    const [mode, setMode] = useState(0);
 
     const render = useCallback(() => {
         const words = wordsData["es"].wordsSortedByFreq;
@@ -27,9 +27,27 @@ export const WordsMap = (props: {
         context.fillStyle = "#00000000";
         context.fillRect(0, 0, w, h);
         if (!cards) return;
-        if (hidden) return;
+        if (mode === 0) return;
         const d = Date.now();
-        cards.forEach((c, i) => {
+        if (mode === 1) {
+            cards.forEach((c, i) => {
+                context.fillStyle = heatMapColorforValue(
+                    Math.min(
+                        Math.log2(Math.max((c.showNext - d) / 1000 / 60, 1)),
+                        36,
+                    ) / 36,
+                );
+                if (d > c.showNext) context.fillStyle = "purple";
+                if (c.showNext === 0) context.fillStyle = "gray";
+                if (c.word === currentWord) context.fillStyle = "white";
+                const x = Math.floor(i % w);
+                const y = Math.floor(i / w);
+                context.fillRect(x, y, 1, 1);
+            });
+            return;
+        }
+        words.forEach((word, i) => {
+            const c = cards.find((c) => c.word === word);
             context.fillStyle = heatMapColorforValue(
                 Math.min(
                     Math.log2(Math.max((c.showNext - d) / 1000 / 60, 1)),
@@ -43,7 +61,7 @@ export const WordsMap = (props: {
             const y = Math.floor(i / w);
             context.fillRect(x, y, 1, 1);
         });
-    }, [cards, currentWord, hidden]);
+    }, [cards, currentWord, mode]);
 
     useEffect(() => {
         render();
@@ -59,8 +77,8 @@ export const WordsMap = (props: {
     }, [render]);
 
     const l = useCallback(() => {
-        setHidden((h) => !h);
-    }, [setHidden]);
+        setMode((m) => (m + 1) % 3);
+    }, [setMode]);
 
     return (
         <canvas
