@@ -4,6 +4,7 @@
     --color-front-primary: #222;
     --color-front-secondary: #555;
     --color-back-primary: #fff;
+    --color-back-secondary: #ccc;
     --color-front-bad: #900;
     --color-front-average: #990;
     --color-front-good: #090;
@@ -33,6 +34,7 @@ body {
         --color-front-primary: #bbb;
         --color-front-secondary: #999;
         --color-back-primary: #111;
+        --color-back-secondary: #444;
         --color-front-bad: #f00;
         --color-front-average: #ff0;
         --color-front-good: #0f0;

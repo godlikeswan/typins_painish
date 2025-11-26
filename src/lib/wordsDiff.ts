@@ -7,7 +7,6 @@ export function wordsDiff(from: string, to: string) {
     const buf = [];
     let hasExessCharsBefore = false;
     while (target.length > 0 || current.length > 0) {
-        debugger;
         if (target[0] === current[0]) {
             buf.push({
                 char: target[0],
